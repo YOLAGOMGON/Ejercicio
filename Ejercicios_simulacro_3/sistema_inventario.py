@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Tienda de Electronica
-"""
+
 
 from datetime import datetime
 

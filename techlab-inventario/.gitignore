@@ -1,0 +1,12 @@
+# Archivos CSV generados (mantener estructura pero ignorar datos)
+# Los archivos base se mantienen en el repositorio
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Reportes generados
+reporte_prestamos_*.csv
+

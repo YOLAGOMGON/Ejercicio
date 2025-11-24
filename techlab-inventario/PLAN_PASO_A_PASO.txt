@@ -1,0 +1,336 @@
+═══════════════════════════════════════════════════════════════
+  PLAN DE DESARROLLO PASO A PASO - TechLab Inventario
+  (Como si fuera un cuaderno de trabajo)
+═══════════════════════════════════════════════════════════════
+
+ANTES DE EMPEZAR:
+────────────────
+✅ Entender qué necesito hacer
+✅ Identificar las "piezas" del programa
+✅ Dibujar el flujo en papel
+✅ Pensar en las estructuras de datos
+
+
+═══════════════════════════════════════════════════════════════
+FASE 1: ANÁLISIS (En papel/cuaderno)
+═══════════════════════════════════════════════════════════════
+
+PASO 1.1: ¿Qué problema resuelvo?
+──────────────────────────────────
+✓ Gestión de equipos tecnológicos (laptops, drones, tablets)
+✓ Préstamos a estudiantes, instructores, administrativos
+✓ Cada tipo de usuario tiene límite diferente de días
+✓ Registrar quién pidió qué, cuándo, si devolvió a tiempo
+
+PASO 1.2: ¿Qué archivos necesito?
+──────────────────────────────────
+CSV:
+  - usuarios.csv (solo admin para login)
+  - equipos.csv (catálogo de equipos)
+  - prestamos.csv (historial de préstamos)
+
+Python:
+  - main.py (inicio de sesión + menú)
+  - usuarios.py (funciones de login)
+  - equipos.py (funciones de equipos)
+  - prestamos.py (funciones de préstamos)
+  - reportes.py (generar reportes CSV)
+
+PASO 1.3: Flujo principal (dibujar en papel)
+──────────────────────────────────────────────
+Programa inicia
+    ↓
+Pantalla de login
+    ↓
+Validar usuario/contraseña (máx 3 intentos)
+    ↓
+Menú principal:
+  1. Gestión de equipos
+  2. Gestión de préstamos
+  3. Historial
+  4. Reportes
+  5. Salir
+
+
+═══════════════════════════════════════════════════════════════
+FASE 2: ESTRUCTURAS DE DATOS
+═══════════════════════════════════════════════════════════════
+
+Equipo (diccionario):
+  {
+    "equipo_id": "EQ001",
+    "nombre_equipo": "Laptop Dell XPS",
+    "categoria": "laptops",
+    "estado_actual": "DISPONIBLE",
+    "fecha_registro": "2025-01-15",
+    "descripcion": "..."
+  }
+
+Préstamo (diccionario):
+  {
+    "prestamo_id": "P001",
+    "equipo_id": "EQ001",
+    "nombre_equipo": "Laptop Dell XPS",
+    "usuario_prestatario": "Juan Pérez",
+    "tipo_usuario": "ESTUDIANTE",
+    "fecha_solicitud": "2025-01-20",
+    "fecha_prestamo": "2025-01-21",
+    "fecha_devolucion": "",
+    "dias_autorizados": 3,
+    "dias_reales_usados": 0,
+    "retraso": "NO",
+    "estado": "PENDIENTE",
+    "mes": "01",
+    "anio": "2025"
+  }
+
+Límites por tipo:
+  ESTUDIANTE: 3 días
+  INSTRUCTOR: 7 días
+  ADMINISTRATIVO: 10 días
+
+
+═══════════════════════════════════════════════════════════════
+FASE 3: ARCHIVOS CSV INICIALES
+═══════════════════════════════════════════════════════════════
+
+usuarios.csv:
+  usuario,contrasena,rol
+  admin,admin123,ADMIN
+
+equipos.csv (estructura):
+  equipo_id,nombre_equipo,categoria,estado_actual,fecha_registro,descripcion
+
+prestamos.csv (estructura):
+  prestamo_id,equipo_id,nombre_equipo,usuario_prestatario,tipo_usuario,
+  fecha_solicitud,fecha_prestamo,fecha_devolucion,dias_autorizados,
+  dias_reales_usados,retraso,estado,mes,anio
+
+
+═══════════════════════════════════════════════════════════════
+FASE 4: IMPLEMENTACIÓN - COMMITS
+═══════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 1: Estructura base y login                         ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Hacer que el programa inicie y valide login
+
+Tareas:
+  1. Crear usuarios.csv con admin/admin123
+  2. Crear usuarios.py:
+     - función validar_login(usuario, contrasena)
+     - Lee usuarios.csv
+     - Retorna True/False
+  3. Crear main.py básico:
+     - Pide usuario y contraseña
+     - Valida con usuarios.py
+     - Máximo 3 intentos
+     - Si válido → mensaje "Login exitoso"
+
+Prueba: Ejecutar y probar con credenciales correctas e incorrectas
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 2: Menú principal                                  ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Mostrar menú después del login
+
+Tareas:
+  1. En main.py, después de login:
+     - Función mostrar_menu()
+     - Opciones 1-5
+     - Bucle while True
+     - Por ahora solo mostrar mensaje "Opción X seleccionada"
+
+Prueba: Login exitoso debe mostrar menú
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 3: Cargar datos al inicio                          ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Leer CSV y cargar en memoria
+
+Tareas:
+  1. Crear funciones para cargar CSV:
+     - usuarios.py: cargar_usuarios()
+     - equipos.py: cargar_equipos()
+     - prestamos.py: cargar_prestamos()
+  2. En main.py, después de login:
+     - Cargar equipos.csv → lista_equipos
+     - Cargar prestamos.csv → lista_prestamos
+
+Prueba: Crear CSV de prueba y verificar que se cargan
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 4: Gestión equipos - Agregar                       ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Registrar nuevo equipo
+
+Tareas:
+  1. Crear equipos.py:
+     - registrar_equipo(lista_equipos, datos)
+     - Generar equipo_id único (EQ001, EQ002...)
+     - Estado inicial = "DISPONIBLE"
+     - Fecha automática
+  2. Función guardar_equipos_csv(lista_equipos, ruta)
+  3. En main.py, opción 1:
+     - Submenú "Gestión de Equipos"
+     - Opción 1.1: Registrar equipo
+     - Pedir datos y guardar
+
+Prueba: Agregar equipo y verificar en equipos.csv
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 5: Gestión equipos - Listar y consultar            ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Ver lista y buscar equipo
+
+Tareas:
+  1. En equipos.py:
+     - listar_equipos(lista_equipos)
+     - buscar_equipo(lista_equipos, equipo_id)
+  2. En main.py, opción 1:
+     - 1.2: Listar equipos
+     - 1.3: Consultar equipo por ID
+
+Prueba: Listar y buscar equipos
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 6: Gestión préstamos - Registrar solicitud         ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Crear solicitud de préstamo (PENDIENTE)
+
+Tareas:
+  1. Crear prestamos.py:
+     - registrar_solicitud_prestamo(lista_prestamos, datos)
+     - Validar equipo existe y está DISPONIBLE
+     - Validar días según tipo de usuario
+     - Generar prestamo_id único
+     - Estado = "PENDIENTE"
+  2. Función validar_dias_por_tipo(tipo, dias):
+     - ESTUDIANTE: máx 3
+     - INSTRUCTOR: máx 7
+     - ADMINISTRATIVO: máx 10
+  3. En main.py, opción 2:
+     - Submenú "Gestión de Préstamos"
+     - Opción 2.1: Registrar solicitud
+
+Prueba: Crear solicitud válida y otra que exceda límite
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 7: Gestión préstamos - Aprobar/Rechazar            ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Admin puede aprobar o rechazar solicitudes
+
+Tareas:
+  1. En prestamos.py:
+     - listar_prestamos_pendientes(lista_prestamos)
+     - aprobar_prestamo(lista_prestamos, prestamo_id, lista_equipos):
+       - Estado = "APROBADO"
+       - Fecha préstamo = hoy
+       - Equipo → estado "PRESTADO"
+     - rechazar_prestamo(lista_prestamos, prestamo_id):
+       - Estado = "RECHAZADO"
+  2. En main.py, opción 2:
+     - 2.2: Aprobar/Rechazar préstamo
+
+Prueba: Aprobar y rechazar préstamos
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 8: Gestión préstamos - Registrar devolución        ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Registrar devolución y calcular retraso
+
+Tareas:
+  1. En prestamos.py:
+     - listar_prestamos_activos(lista_prestamos)
+     - registrar_devolucion(lista_prestamos, prestamo_id, fecha, lista_equipos):
+       - Calcular días reales usados
+       - Comparar con días autorizados
+       - Si excede → retraso = "SI"
+       - Estado = "DEVUELTO"
+       - Equipo → estado "DISPONIBLE"
+  2. Función para calcular diferencia de días entre fechas
+  3. En main.py, opción 2:
+     - 2.3: Registrar devolución
+
+Prueba: Devolver a tiempo y con retraso
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 9: Historial                                       ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Consultar historial por equipo o usuario
+
+Tareas:
+  1. En prestamos.py:
+     - consultar_historial_equipo(lista_prestamos, equipo_id)
+     - consultar_historial_usuario(lista_prestamos, nombre)
+  2. En main.py, opción 3:
+     - Submenú historial
+     - Por equipo o por usuario
+
+Prueba: Consultar historial de diferentes equipos/usuarios
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 10: Exportar reporte CSV                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Generar reporte CSV por mes y año
+
+Tareas:
+  1. Crear reportes.py:
+     - exportar_reporte_mes_anio(lista_prestamos, mes, anio, ruta)
+     - Filtrar DEVUELTOS del mes/año
+     - Nombre: reporte_prestamos_2025_03.csv
+  2. En main.py, opción 4:
+     - Pedir mes y año
+     - Llamar a exportar_reporte()
+
+Prueba: Generar reporte con datos y sin datos
+
+
+╔═══════════════════════════════════════════════════════════╗
+║ COMMIT 11: Validaciones y manejo de errores               ║
+╚═══════════════════════════════════════════════════════════╝
+
+Objetivo: Mejorar validaciones
+
+Tareas:
+  - Validar formato de fechas (YYYY-MM-DD)
+  - Validar que CSV existen antes de cargar
+  - try/except en lectura/escritura de CSV
+  - Validar IDs únicos
+  - Mensajes claros de error
+
+Prueba: Probar casos de error y verificar mensajes
+
+
+═══════════════════════════════════════════════════════════════
+NOTAS IMPORTANTES:
+═══════════════════════════════════════════════════════════════
+
+✓ Cada commit debe funcionar independientemente
+✓ Probar cada funcionalidad antes del siguiente commit
+✓ Si algo falla, volver al commit anterior y revisar
+✓ Los commits permiten ver el progreso paso a paso
+✓ Este plan es tu guía, síguelo paso a paso
+
+═══════════════════════════════════════════════════════════════
+
